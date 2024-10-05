@@ -29,8 +29,9 @@
   },
   "manifest": {
     "host_permissions": [
-      "https://*/*",
-      "notifications"
+      "https://*/*"
+    ],"permissions":[
+      "storage"
     ]
   }
 }
