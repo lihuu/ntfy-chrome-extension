@@ -10,6 +10,7 @@
     "package": "plasmo package"
   },
   "dependencies": {
+    "@mui/icons-material": "^6.1.2",
     "@plasmohq/storage": "^1.12.0",
     "plasmo": "0.89.2",
     "react": "18.2.0",
@@ -30,8 +31,12 @@
   "manifest": {
     "host_permissions": [
       "https://*/*"
-    ],"permissions":[
-      "storage"
+    ],
+    "permissions": [
+      "storage",
+      "contextMenus",
+      "activeTab",
+      "notifications"
     ]
   }
 }
