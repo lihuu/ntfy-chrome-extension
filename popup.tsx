@@ -5,6 +5,7 @@ import TextField from "@mui/material/TextField"
 import { useEffect, useState } from "react"
 
 import type { NotifyConfig } from "~types"
+import getMessage from "~utils/LocaleUtils"
 import { sendMessageToNtfy } from "~utils/MessageUtils"
 
 interface ConfigProps {
@@ -71,7 +72,7 @@ function MessageSender({ config, setShowConfig }: MessageSenderProps) {
   return (
     <div>
       <TextField
-        label="消息"
+        label={getMessage("message")}
         variant="outlined"
         fullWidth
         multiline
@@ -91,7 +92,7 @@ function MessageSender({ config, setShowConfig }: MessageSenderProps) {
           color="primary"
           onClick={handleSendMessage}
           style={{ marginTop: 16 }}>
-          发送消息
+          {getMessage("send_message")}
         </Button>
         <IconButton
           color="primary"
@@ -124,9 +125,9 @@ function Config({ config, setShowConfig }: ConfigProps) {
   }
   return (
     <div>
-      <h2>推送设置</h2>
+      <h2>{getMessage("push_config")}</h2>
       <TextField
-        label="服务地址"
+        label={getMessage("service_address")}
         variant="standard"
         fullWidth
         required
@@ -136,7 +137,7 @@ function Config({ config, setShowConfig }: ConfigProps) {
         type="url"
       />
       <TextField
-        label="订阅主题"
+        label={getMessage("topic")}
         variant="standard"
         fullWidth
         required
@@ -145,7 +146,7 @@ function Config({ config, setShowConfig }: ConfigProps) {
         value={topic}
       />
       <TextField
-        label="用户名"
+        label={getMessage("user_name")}
         variant="standard"
         fullWidth
         margin="normal"
@@ -153,7 +154,7 @@ function Config({ config, setShowConfig }: ConfigProps) {
         value={username}
       />
       <TextField
-        label="密码"
+        label={getMessage("password")}
         type="password"
         variant="standard"
         fullWidth
@@ -167,7 +168,7 @@ function Config({ config, setShowConfig }: ConfigProps) {
         color="primary"
         onClick={() => handleSave()}
         style={{ marginTop: 16 }}>
-        保存
+        {getMessage("save")}
       </Button>
     </div>
   )

@@ -29,6 +29,7 @@
     "typescript": "5.3.3"
   },
   "manifest": {
+    "default_locale": "en",
     "host_permissions": [
       "https://*/*"
     ],
