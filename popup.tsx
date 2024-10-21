@@ -22,6 +22,8 @@ function IndexPopup() {
     password: ""
   })
 
+  const [configUpdateTimes, setConfigUpdateTimes] = useState(0)
+
   useEffect(() => {
     chrome.storage.sync.get("notifyConfig", (result) => {
       const config = result.notifyConfig
@@ -29,7 +31,7 @@ function IndexPopup() {
         setConfig(config)
       }
     })
-  }, [])
+  }, [configUpdateTimes])
 
   return (
     <div
@@ -45,7 +47,13 @@ function IndexPopup() {
         />
       )}
       {showConfig && (
-        <Config config={config} setShowConfig={(v) => setShowConfig(v)} />
+        <Config
+          config={config}
+          setShowConfig={(v) => {
+            setShowConfig(v)
+            setConfigUpdateTimes(configUpdateTimes + 1)
+          }}
+        />
       )}
     </div>
   )
