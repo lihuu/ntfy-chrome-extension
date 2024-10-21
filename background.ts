@@ -1,5 +1,3 @@
-import logo from "url:./assets/message-icon.png"
-
 import { sendMessageToNtfy } from "~utils/MessageUtils"
 
 export {}
@@ -23,14 +21,5 @@ chrome.contextMenus.onClicked.addListener((info, tab) => {
       }
       sendMessageToNtfy(message, config)
     })
-    // chrome.notifications.create({
-    //   type: "basic",
-    //   iconUrl: logo,
-    //   title: "",
-    //   message: `Selected text: ${message}`
-    // })
-    console.log(logo)
   }
 })
-
-// 订阅fcm消息
