@@ -1,10 +1,35 @@
 {
-  "message": { "message": "message" },
-  "send_message": { "message": "Send" },
-  "push_config": { "message": "Service Config" },
-  "service_address": { "message": "Address" },
-  "topic": { "message": "Topic" },
-  "user_name": { "message": "User" },
-  "password": { "message": "Password" },
-  "save": { "message": "Save" }
+  "message": {
+    "message": "message"
+  },
+  "send_message": {
+    "message": "Send"
+  },
+  "push_config": {
+    "message": "Service Config"
+  },
+  "service_address": {
+    "message": "Address"
+  },
+  "topic": {
+    "message": "Topic"
+  },
+  "user_name": {
+    "message": "User"
+  },
+  "password": {
+    "message": "Password"
+  },
+  "save": {
+    "message": "Save"
+  },
+  "send_to_ntfy": {
+    "message": "Send to ntfy"
+  },
+  "send_success": {
+    "message": "Send success"
+  },
+  "send_failed": {
+    "message": "Send failed"
+  }
 }

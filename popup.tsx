@@ -1,12 +1,18 @@
 import { Settings } from "@mui/icons-material"
-import { IconButton } from "@mui/material"
+import CheckIcon from "@mui/icons-material/Check"
+import { LoadingButton } from "@mui/lab"
+import { Alert, IconButton } from "@mui/material"
 import Button from "@mui/material/Button"
 import TextField from "@mui/material/TextField"
-import { useEffect, useState } from "react"
+import React, { useEffect, useState } from "react"
 
 import type { NotifyConfig } from "~types"
 import getMessage from "~utils/LocaleUtils"
 import { sendMessageToNtfy } from "~utils/MessageUtils"
+
+
+
+
 
 interface ConfigProps {
   config: NotifyConfig
@@ -64,17 +70,39 @@ interface MessageSenderProps {
   setShowConfig: (showConfig: boolean) => void
 }
 
+enum SendingState {
+  IDLE,
+  SENDING,
+  SUCCESS,
+  FAILED
+}
+
 function MessageSender({ config, setShowConfig }: MessageSenderProps) {
   const [message, setMessage] = useState("")
+  const [sendingState, setSendingState] = useState<SendingState>(
+    SendingState.IDLE
+  )
 
   const handleSendMessage = () => {
-    console.log("Sending message:", message)
+    if (sendingState === SendingState.SENDING) {
+      return
+    }
+    setSendingState(SendingState.SENDING)
     if (config.serviceAddress === "" || config.topic === "") {
-      setShowConfig(true)
+      setSendingState(SendingState.IDLE)
       return
     }
 
-    sendMessageToNtfy(message, config)
+    sendMessageToNtfy(
+      message,
+      config,
+      () => {
+        setSendingState(SendingState.SUCCESS)
+      },
+      () => {
+        setSendingState(SendingState.FAILED)
+      }
+    )
   }
 
   return (
@@ -88,20 +116,36 @@ function MessageSender({ config, setShowConfig }: MessageSenderProps) {
         margin="normal"
         onChange={(e) => setMessage(e.target.value)}
         value={message}
+        onFocus={() => {
+          setSendingState(SendingState.IDLE)
+        }}
       />
+      {sendingState === SendingState.SUCCESS && (
+        <Alert icon={<CheckIcon fontSize="inherit" />} severity="success">
+          {getMessage("send_success")}
+        </Alert>
+      )}
+
+      {sendingState === SendingState.FAILED && (
+        <Alert icon={<CheckIcon fontSize="inherit" />} severity="error">
+          {getMessage("send_failed")}
+        </Alert>
+      )}
       <div
         style={{
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center"
         }}>
-        <Button
+        <LoadingButton
           variant="contained"
           color="primary"
+          loading={sendingState === SendingState.SENDING}
           onClick={handleSendMessage}
           style={{ marginTop: 16 }}>
           {getMessage("send_message")}
-        </Button>
+        </LoadingButton>
+
         <IconButton
           color="primary"
           onClick={() => setShowConfig(true)}

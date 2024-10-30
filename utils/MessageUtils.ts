@@ -1,6 +1,11 @@
 import type { NotifyConfig } from "~types"
 
-export function sendMessageToNtfy(message: string, config: NotifyConfig) {
+export function sendMessageToNtfy(
+  message: string,
+  config: NotifyConfig,
+  successCallback?: (data: string) => void,
+  errorCallback?: (error: Error) => void
+) {
   if (message === "") {
     console.error("Message is empty")
     return
@@ -22,8 +27,10 @@ export function sendMessageToNtfy(message: string, config: NotifyConfig) {
     })
     .then((data) => {
       console.log("Message sent successfully:", data)
+      successCallback?.(data)
     })
     .catch((error) => {
       console.error("Error sending message:", error)
+      errorCallback?.(error)
     })
 }

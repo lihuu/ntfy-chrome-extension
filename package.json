@@ -1,7 +1,7 @@
 {
   "name": "ntfy-chrome-extension",
   "displayName": "Ntfy chrome extension",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "chrome extension for of ntfy, support sending messages and notifications",
   "author": "lihuu",
   "scripts": {
@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@mui/icons-material": "^6.1.2",
+    "@mui/lab": "5.0.0-alpha.135",
     "@plasmohq/storage": "^1.12.0",
     "plasmo": "0.89.2",
     "react": "18.2.0",

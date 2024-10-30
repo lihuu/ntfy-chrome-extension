@@ -1,22 +1,26 @@
+import getMessage from "~utils/LocaleUtils"
 import { sendMessageToNtfy } from "~utils/MessageUtils"
+
+
+
+
 
 export {}
 
 chrome.runtime.onInstalled.addListener(() => {
   chrome.contextMenus.create({
     id: "sendToNtfyServer",
-    title: "发送到ntfy",
+    title: getMessage("send_to_ntfy"),
     contexts: ["selection"]
   })
 })
 
-chrome.contextMenus.onClicked.addListener((info, tab) => {
+chrome.contextMenus.onClicked.addListener((info) => {
   if (info.menuItemId === "sendToNtfyServer" && info.selectionText) {
     const message = info.selectionText
     chrome.storage.sync.get("notifyConfig", (result) => {
       const config = result.notifyConfig
       if (!config) {
-        console.error("No ntfy config found")
         return
       }
       sendMessageToNtfy(message, config)
