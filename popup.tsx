@@ -1,23 +1,12 @@
-import { Settings } from "@mui/icons-material"
-import CheckIcon from "@mui/icons-material/Check"
-import { LoadingButton } from "@mui/lab"
-import { Alert, IconButton } from "@mui/material"
-import Button from "@mui/material/Button"
-import TextField from "@mui/material/TextField"
-import React, { useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 
+import Config from "~src/component/config"
+import MessageSender from "~src/component/sender"
 import type { NotifyConfig } from "~types"
-import getMessage from "~utils/LocaleUtils"
-import { sendMessageToNtfy } from "~utils/MessageUtils"
 
 
 
 
-
-interface ConfigProps {
-  config: NotifyConfig
-  setShowConfig: (showConfig: boolean) => void
-}
 
 function IndexPopup() {
   const [showConfig, setShowConfig] = useState(false)
@@ -61,167 +50,6 @@ function IndexPopup() {
           }}
         />
       )}
-    </div>
-  )
-}
-
-interface MessageSenderProps {
-  config: NotifyConfig
-  setShowConfig: (showConfig: boolean) => void
-}
-
-enum SendingState {
-  IDLE,
-  SENDING,
-  SUCCESS,
-  FAILED
-}
-
-function MessageSender({ config, setShowConfig }: MessageSenderProps) {
-  const [message, setMessage] = useState("")
-  const [sendingState, setSendingState] = useState<SendingState>(
-    SendingState.IDLE
-  )
-
-  const handleSendMessage = () => {
-    if (sendingState === SendingState.SENDING) {
-      return
-    }
-    setSendingState(SendingState.SENDING)
-    if (config.serviceAddress === "" || config.topic === "") {
-      setSendingState(SendingState.IDLE)
-      return
-    }
-
-    sendMessageToNtfy(
-      message,
-      config,
-      () => {
-        setSendingState(SendingState.SUCCESS)
-      },
-      () => {
-        setSendingState(SendingState.FAILED)
-      }
-    )
-  }
-
-  return (
-    <div>
-      <TextField
-        label={getMessage("message")}
-        variant="outlined"
-        fullWidth
-        multiline
-        rows={4}
-        margin="normal"
-        onChange={(e) => setMessage(e.target.value)}
-        value={message}
-        onFocus={() => {
-          setSendingState(SendingState.IDLE)
-        }}
-      />
-      {sendingState === SendingState.SUCCESS && (
-        <Alert icon={<CheckIcon fontSize="inherit" />} severity="success">
-          {getMessage("send_success")}
-        </Alert>
-      )}
-
-      {sendingState === SendingState.FAILED && (
-        <Alert icon={<CheckIcon fontSize="inherit" />} severity="error">
-          {getMessage("send_failed")}
-        </Alert>
-      )}
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center"
-        }}>
-        <LoadingButton
-          variant="contained"
-          color="primary"
-          loading={sendingState === SendingState.SENDING}
-          onClick={handleSendMessage}
-          style={{ marginTop: 16 }}>
-          {getMessage("send_message")}
-        </LoadingButton>
-
-        <IconButton
-          color="primary"
-          onClick={() => setShowConfig(true)}
-          style={{ marginTop: 16 }}>
-          <Settings />
-        </IconButton>
-      </div>
-    </div>
-  )
-}
-
-function Config({ config, setShowConfig }: ConfigProps) {
-  const [serviceAddress, setServiceAddress] = useState(config.serviceAddress)
-  const [topic, setTopic] = useState(config.topic)
-  const [username, setUsername] = useState(config.username)
-  const [password, setPassword] = useState(config.password)
-
-  const handleSave = () => {
-    const newConfig = {
-      serviceAddress,
-      topic,
-      username,
-      password
-    }
-    chrome.storage.sync.set({ notifyConfig: newConfig }, () => {
-      console.log("Configuration saved to chrome.storage")
-      setShowConfig(false)
-    })
-  }
-  return (
-    <div>
-      <h2>{getMessage("push_config")}</h2>
-      <TextField
-        label={getMessage("service_address")}
-        variant="standard"
-        fullWidth
-        required
-        margin="normal"
-        onChange={(e) => setServiceAddress(e.target.value)}
-        value={serviceAddress}
-        type="url"
-      />
-      <TextField
-        label={getMessage("topic")}
-        variant="standard"
-        fullWidth
-        required
-        margin="normal"
-        onChange={(e) => setTopic(e.target.value)}
-        value={topic}
-      />
-      <TextField
-        label={getMessage("user_name")}
-        variant="standard"
-        fullWidth
-        margin="normal"
-        onChange={(e) => setUsername(e.target.value)}
-        value={username}
-      />
-      <TextField
-        label={getMessage("password")}
-        type="password"
-        variant="standard"
-        fullWidth
-        margin="normal"
-        onChange={(e) => setPassword(e.target.value)}
-        value={password}
-      />
-
-      <Button
-        variant="contained"
-        color="primary"
-        onClick={() => handleSave()}
-        style={{ marginTop: 16 }}>
-        {getMessage("save")}
-      </Button>
     </div>
   )
 }
