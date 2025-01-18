@@ -13,7 +13,7 @@
     "@mui/icons-material": "^6.1.2",
     "@mui/lab": "5.0.0-alpha.135",
     "@plasmohq/storage": "^1.12.0",
-    "plasmo": "0.89.2",
+    "plasmo": "0.89.4",
     "react": "18.2.0",
     "react-dom": "18.2.0"
   },

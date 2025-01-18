@@ -1,4 +1,4 @@
-import type { NotifyConfig } from "~types"
+import type { NotifyConfig } from "~/types"
 
 export function sendMessageToNtfy(
   message: string,

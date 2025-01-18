@@ -1,12 +1,8 @@
 import { useEffect, useState } from "react"
 
-import Config from "~src/component/config"
-import MessageSender from "~src/component/sender"
-import type { NotifyConfig } from "~types"
-
-
-
-
+import Config from "~/component/config"
+import MessageSender from "~/component/sender"
+import type { NotifyConfig } from "~/types"
 
 function IndexPopup() {
   const [showConfig, setShowConfig] = useState(false)

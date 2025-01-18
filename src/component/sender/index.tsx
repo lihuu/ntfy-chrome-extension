@@ -1,17 +1,19 @@
 import { Settings } from "@mui/icons-material"
 import CheckIcon from "@mui/icons-material/Check"
 import { LoadingButton } from "@mui/lab"
-import { Alert, IconButton } from "@mui/material"
+import {
+  Alert,
+  FormControlLabel,
+  FormGroup,
+  IconButton,
+  Switch
+} from "@mui/material"
 import TextField from "@mui/material/TextField"
 import { useState } from "react"
 
-import { SendingState, type MessageSenderProps } from "~types"
-import getMessage from "~utils/LocaleUtils"
-import { sendMessageToNtfy } from "~utils/MessageUtils"
-
-
-
-
+import { SendingState, type MessageSenderProps } from "~/types"
+import getMessage from "~/utils/LocaleUtils"
+import { sendMessageToNtfy } from "~/utils/MessageUtils"
 
 export default function MessageSender({
   config,
@@ -21,6 +23,8 @@ export default function MessageSender({
   const [sendingState, setSendingState] = useState<SendingState>(
     SendingState.IDLE
   )
+
+  const [title, setTitle] = useState("")
 
   const handleSendMessage = () => {
     if (sendingState === SendingState.SENDING) {
@@ -47,6 +51,16 @@ export default function MessageSender({
   return (
     <div>
       <TextField
+        label="标题"
+        fullWidth
+        margin="normal"
+        value={title}
+        onChange={(e) => setTitle(e.target.value)}
+        onFocus={() => {
+          setSendingState(SendingState.IDLE)
+        }}
+      />
+      <TextField
         label={getMessage("message")}
         variant="outlined"
         fullWidth
@@ -70,6 +84,14 @@ export default function MessageSender({
           {getMessage("send_failed")}
         </Alert>
       )}
+
+      <FormGroup>
+        <FormControlLabel
+          control={<Switch defaultChecked />}
+          label="高级模式"
+        />
+      </FormGroup>
+
       <div
         style={{
           display: "flex",
@@ -84,7 +106,6 @@ export default function MessageSender({
           style={{ marginTop: 16 }}>
           {getMessage("send_message")}
         </LoadingButton>
-
         <IconButton
           color="primary"
           onClick={() => setShowConfig(true)}
