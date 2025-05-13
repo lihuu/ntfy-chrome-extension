@@ -23,6 +23,9 @@
   "save": {
     "message": "保存"
   },
+  "back": {
+    "message": "返回"
+  },
   "send_to_ntfy": {
     "message": "发送到ntfy"
   },

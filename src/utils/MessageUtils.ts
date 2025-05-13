@@ -1,7 +1,7 @@
-import type { NotifyConfig } from "~/types"
+import type { NotifyConfig, NtfyContent } from "~/types"
 
 export function sendMessageToNtfy(
-  message: string,
+  {message,title}: NtfyContent,
   config: NotifyConfig,
   successCallback?: (data: string) => void,
   errorCallback?: (error: Error) => void
@@ -11,12 +11,16 @@ export function sendMessageToNtfy(
     return
   }
   const requestUrl = `${config.serviceAddress}/${config.topic}`
+  const headers = {
+    "Content-Type": "text/plain",
+    Authorization: `Basic ${btoa(`${config.username}:${config.password}`)}`
+  }
+  if(title&&title!==""){
+    headers["Title"] = title
+  }
   fetch(requestUrl, {
     method: "POST",
-    headers: {
-      "Content-Type": "text/plain",
-      Authorization: `Basic ${btoa(`${config.username}:${config.password}`)}`
-    },
+    headers: headers,
     body: message
   })
     .then((response) => {

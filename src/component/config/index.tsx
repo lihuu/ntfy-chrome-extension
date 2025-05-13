@@ -1,6 +1,8 @@
 import Button from "@mui/material/Button"
 import TextField from "@mui/material/TextField"
 import { useState } from "react"
+import Box from "@mui/material/Box"
+import ArrowBackIcon from "@mui/icons-material/ArrowBack"
 
 import type { ConfigProps } from "~types"
 import getMessage from "~utils/LocaleUtils"
@@ -29,7 +31,16 @@ export default function Config({ config, setShowConfig }: ConfigProps) {
   }
   return (
     <div>
-      <h2>{getMessage("push_config")}</h2>
+      <Box display="flex" alignItems="flex-start" mb={0} gap={0} pl={0}>
+        <Button
+          startIcon={<ArrowBackIcon />}
+          onClick={() => setShowConfig(false)}
+          style={{ marginLeft: -8,paddingLeft: 0,paddingRight: 0,justifyContent:"left",minWidth:"32px" }}
+        >
+          {/* {getMessage("back")} */}
+        </Button>
+        <h2 style={{ margin: 0,paddingTop:"6px" }}>{getMessage("push_config")}</h2>
+      </Box>
       <TextField
         label={getMessage("service_address")}
         variant="standard"

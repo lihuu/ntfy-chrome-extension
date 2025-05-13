@@ -21,3 +21,8 @@ export enum SendingState {
   SUCCESS,
   FAILED
 }
+
+export interface NtfyContent{
+  message:string
+  title?:string
+}

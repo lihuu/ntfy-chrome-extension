@@ -23,7 +23,7 @@ chrome.contextMenus.onClicked.addListener((info) => {
       if (!config) {
         return
       }
-      sendMessageToNtfy(message, config)
+      sendMessageToNtfy({message}, config)
     })
   }
 })

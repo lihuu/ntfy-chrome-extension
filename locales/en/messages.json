@@ -23,6 +23,9 @@
   "save": {
     "message": "Save"
   },
+  "back": {
+    "message": "Back"
+  },
   "send_to_ntfy": {
     "message": "Send to ntfy"
   },

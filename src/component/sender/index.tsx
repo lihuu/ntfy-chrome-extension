@@ -37,7 +37,7 @@ export default function MessageSender({
     }
 
     sendMessageToNtfy(
-      message,
+      {message,title},
       config,
       () => {
         setSendingState(SendingState.SUCCESS)
