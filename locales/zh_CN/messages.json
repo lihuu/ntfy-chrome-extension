@@ -32,6 +32,18 @@
   "send_success": {
     "message": "发送成功"
   },
+  "upload_file": {
+    "message": "上传文件"
+  },
+  "file_upload_mode": {
+    "message": "文件上传模式"
+  },
+  "no_file_selected": {
+    "message": "未选择文件"
+  },
+  "cancel": {
+    "message": "取消"
+  },
   "send_failed": {
     "message": "发送失败"
   }

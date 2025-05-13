@@ -32,6 +32,18 @@
   "send_success": {
     "message": "Send success"
   },
+  "upload_file": {
+    "message": "Upload File"
+  },
+  "file_upload_mode": {
+    "message": "File Upload Mode"
+  },
+  "no_file_selected": {
+    "message": "No file selected"
+  },
+  "cancel": {
+    "message": "Cancel"
+  },
   "send_failed": {
     "message": "Send failed"
   }

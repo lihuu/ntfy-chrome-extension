@@ -1,17 +1,20 @@
 import { Settings } from "@mui/icons-material"
+import AttachFileIcon from "@mui/icons-material/AttachFile"
 import CheckIcon from "@mui/icons-material/Check"
 import { LoadingButton } from "@mui/lab"
 import {
   Alert,
+  Button,
   FormControlLabel,
   FormGroup,
   IconButton,
-  Switch
+  Switch,
+  Typography
 } from "@mui/material"
 import TextField from "@mui/material/TextField"
-import { useState } from "react"
+import { useState, useRef } from "react"
 
-import { SendingState, type MessageSenderProps } from "~/types"
+import { MessageType, SendingState, type MessageSenderProps } from "~/types"
 import getMessage from "~/utils/LocaleUtils"
 import { sendMessageToNtfy } from "~/utils/MessageUtils"
 
@@ -23,8 +26,35 @@ export default function MessageSender({
   const [sendingState, setSendingState] = useState<SendingState>(
     SendingState.IDLE
   )
-
   const [title, setTitle] = useState("")
+  const [selectedFile, setSelectedFile] = useState<File | null>(null)
+  const [messageType, setMessageType] = useState<MessageType>(MessageType.TEXT)
+  
+  // 用于文件选择的引用
+  const fileInputRef = useRef<HTMLInputElement>(null)
+
+  // 处理文件选择
+  const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const files = event.target.files
+    if (files && files.length > 0) {
+      setSelectedFile(files[0])
+      setMessageType(MessageType.FILE)
+    }
+  }
+  
+  // 触发文件选择对话框
+  const triggerFileSelect = () => {
+    fileInputRef.current?.click()
+  }
+  
+  // 清除选中的文件
+  const clearSelectedFile = () => {
+    setSelectedFile(null)
+    setMessageType(MessageType.TEXT)
+    if (fileInputRef.current) {
+      fileInputRef.current.value = ""
+    }
+  }
 
   const handleSendMessage = () => {
     if (sendingState === SendingState.SENDING) {
@@ -37,10 +67,18 @@ export default function MessageSender({
     }
 
     sendMessageToNtfy(
-      {message,title},
+      { 
+        message, 
+        title, 
+        file: messageType === MessageType.FILE ? selectedFile || undefined : undefined 
+      },
       config,
       () => {
         setSendingState(SendingState.SUCCESS)
+        // 发送成功后清除文件选择
+        if (messageType === MessageType.FILE) {
+          clearSelectedFile()
+        }
       },
       () => {
         setSendingState(SendingState.FAILED)
@@ -60,19 +98,60 @@ export default function MessageSender({
           setSendingState(SendingState.IDLE)
         }}
       />
-      <TextField
-        label={getMessage("message")}
-        variant="outlined"
-        fullWidth
-        multiline
-        rows={4}
-        margin="normal"
-        onChange={(e) => setMessage(e.target.value)}
-        value={message}
-        onFocus={() => {
-          setSendingState(SendingState.IDLE)
-        }}
+      
+      {/* 隐藏的文件输入 */}
+      <input
+        type="file"
+        ref={fileInputRef}
+        style={{ display: 'none' }}
+        onChange={handleFileSelect}
       />
+      
+      {messageType === MessageType.TEXT ? (
+        // 文本消息输入框
+        <TextField
+          label={getMessage("message")}
+          variant="outlined"
+          fullWidth
+          multiline
+          rows={4}
+          margin="normal"
+          onChange={(e) => setMessage(e.target.value)}
+          value={message}
+          onFocus={() => {
+            setSendingState(SendingState.IDLE)
+          }}
+        />
+      ) : (
+        // 文件上传显示区域
+        <div
+          style={{ 
+            border: '1px dashed #aaa', 
+            padding: '16px', 
+            marginTop: '16px',
+            marginBottom: '8px',
+            borderRadius: '4px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between'
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <AttachFileIcon color="primary" style={{ marginRight: '8px' }}/>
+            <Typography>
+              {selectedFile ? selectedFile.name : getMessage("no_file_selected")}
+              {selectedFile && ` (${(selectedFile.size / 1024).toFixed(2)} KB)`}
+            </Typography>
+          </div>
+          <Button 
+            size="small" 
+            color="secondary" 
+            onClick={clearSelectedFile}
+          >
+            {getMessage("cancel")}
+          </Button>
+        </div>
+      )}
       {sendingState === SendingState.SUCCESS && (
         <Alert icon={<CheckIcon fontSize="inherit" />} severity="success">
           {getMessage("send_success")}
@@ -87,8 +166,19 @@ export default function MessageSender({
 
       <FormGroup>
         <FormControlLabel
-          control={<Switch defaultChecked />}
-          label="高级模式"
+          control={
+            <Switch 
+              checked={messageType === MessageType.FILE}
+              onChange={(e) => {
+                if (e.target.checked) {
+                  triggerFileSelect();
+                } else {
+                  clearSelectedFile();
+                }
+              }}
+            />
+          }
+          label={getMessage("file_upload_mode")}
         />
       </FormGroup>
 
@@ -98,14 +188,32 @@ export default function MessageSender({
           justifyContent: "space-between",
           alignItems: "center"
         }}>
-        <LoadingButton
-          variant="contained"
-          color="primary"
-          loading={sendingState === SendingState.SENDING}
-          onClick={handleSendMessage}
-          style={{ marginTop: 16 }}>
-          {getMessage("send_message")}
-        </LoadingButton>
+        <div>
+          <LoadingButton
+            variant="contained"
+            color="primary"
+            loading={sendingState === SendingState.SENDING}
+            onClick={handleSendMessage}
+            style={{ marginTop: 16, marginRight: 8 }}
+            disabled={
+              (messageType === MessageType.TEXT && !message) || 
+              (messageType === MessageType.FILE && !selectedFile)
+            }
+          >
+            {getMessage("send_message")}
+          </LoadingButton>
+          
+          {messageType === MessageType.TEXT && (
+            <Button
+              startIcon={<AttachFileIcon />}
+              onClick={triggerFileSelect}
+              style={{ marginTop: 16 }}
+            >
+              {getMessage("upload_file")}
+            </Button>
+          )}
+        </div>
+        
         <IconButton
           color="primary"
           onClick={() => setShowConfig(true)}

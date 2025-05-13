@@ -25,4 +25,10 @@ export enum SendingState {
 export interface NtfyContent{
   message:string
   title?:string
+  file?: File
+}
+
+export enum MessageType {
+  TEXT,
+  FILE
 }
