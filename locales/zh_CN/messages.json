@@ -46,5 +46,11 @@
   },
   "send_failed": {
     "message": "发送失败"
+  },
+  "title": {
+    "message": "标题"
+  },
+  "attachment": {
+    "message": "附件"
   }
 }

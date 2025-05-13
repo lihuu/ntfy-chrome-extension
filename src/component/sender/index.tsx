@@ -89,7 +89,7 @@ export default function MessageSender({
   return (
     <div>
       <TextField
-        label="标题"
+        label={getMessage("title")}
         fullWidth
         margin="normal"
         value={title}
@@ -164,37 +164,31 @@ export default function MessageSender({
         </Alert>
       )}
 
-      <FormGroup>
-        <FormControlLabel
-          control={
-            <Switch 
-              checked={messageType === MessageType.FILE}
-              onChange={(e) => {
-                if (e.target.checked) {
-                  triggerFileSelect();
-                } else {
-                  clearSelectedFile();
-                }
-              }}
-            />
-          }
-          label={getMessage("file_upload_mode")}
-        />
-      </FormGroup>
+      <div>
+        {/* 上传文件按钮放在发送按钮上方 */}
+        <Button
+          startIcon={<AttachFileIcon />}
+          onClick={triggerFileSelect}
+          style={{ margin: '16px 0 8px 0' }}
+          variant="outlined"
+          fullWidth
+        >
+          {getMessage("attachment")}
+        </Button>
 
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center"
-        }}>
-        <div>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            marginTop: 8
+          }}>
           <LoadingButton
             variant="contained"
             color="primary"
             loading={sendingState === SendingState.SENDING}
             onClick={handleSendMessage}
-            style={{ marginTop: 16, marginRight: 8 }}
+            style={{ marginTop: 8 }}
             disabled={
               (messageType === MessageType.TEXT && !message) || 
               (messageType === MessageType.FILE && !selectedFile)
@@ -203,23 +197,13 @@ export default function MessageSender({
             {getMessage("send_message")}
           </LoadingButton>
           
-          {messageType === MessageType.TEXT && (
-            <Button
-              startIcon={<AttachFileIcon />}
-              onClick={triggerFileSelect}
-              style={{ marginTop: 16 }}
-            >
-              {getMessage("upload_file")}
-            </Button>
-          )}
+          <IconButton
+            color="primary"
+            onClick={() => setShowConfig(true)}
+            style={{ marginTop: 8 }}>
+            <Settings />
+          </IconButton>
         </div>
-        
-        <IconButton
-          color="primary"
-          onClick={() => setShowConfig(true)}
-          style={{ marginTop: 16 }}>
-          <Settings />
-        </IconButton>
       </div>
     </div>
   )

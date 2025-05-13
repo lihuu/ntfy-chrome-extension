@@ -46,5 +46,11 @@
   },
   "send_failed": {
     "message": "Send failed"
+  },
+  "title": {
+    "message": "Title"
+  },
+  "attachment": {
+    "message": "Attachment"
   }
 }
