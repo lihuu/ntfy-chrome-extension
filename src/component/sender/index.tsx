@@ -63,6 +63,8 @@ export default function MessageSender({
     setSendingState(SendingState.SENDING)
     if (config.serviceAddress === "" || config.topic === "") {
       setSendingState(SendingState.IDLE)
+      // 如果没有配置，显示配置界面
+      setShowConfig(true)
       return
     }
 
