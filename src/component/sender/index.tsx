@@ -12,7 +12,7 @@ import {
   Typography
 } from "@mui/material"
 import TextField from "@mui/material/TextField"
-import { useState, useRef } from "react"
+import { useRef, useState } from "react"
 
 import { MessageType, SendingState, type MessageSenderProps } from "~/types"
 import getMessage from "~/utils/LocaleUtils"
@@ -29,7 +29,7 @@ export default function MessageSender({
   const [title, setTitle] = useState("")
   const [selectedFile, setSelectedFile] = useState<File | null>(null)
   const [messageType, setMessageType] = useState<MessageType>(MessageType.TEXT)
-  
+
   // 用于文件选择的引用
   const fileInputRef = useRef<HTMLInputElement>(null)
 
@@ -41,12 +41,12 @@ export default function MessageSender({
       setMessageType(MessageType.FILE)
     }
   }
-  
+
   // 触发文件选择对话框
   const triggerFileSelect = () => {
     fileInputRef.current?.click()
   }
-  
+
   // 清除选中的文件
   const clearSelectedFile = () => {
     setSelectedFile(null)
@@ -69,10 +69,13 @@ export default function MessageSender({
     }
 
     sendMessageToNtfy(
-      { 
-        message, 
-        title, 
-        file: messageType === MessageType.FILE ? selectedFile || undefined : undefined 
+      {
+        message,
+        title,
+        file:
+          messageType === MessageType.FILE
+            ? selectedFile || undefined
+            : undefined
       },
       config,
       () => {
@@ -100,15 +103,15 @@ export default function MessageSender({
           setSendingState(SendingState.IDLE)
         }}
       />
-      
+
       {/* 隐藏的文件输入 */}
       <input
         type="file"
         ref={fileInputRef}
-        style={{ display: 'none' }}
+        style={{ display: "none" }}
         onChange={handleFileSelect}
       />
-      
+
       {messageType === MessageType.TEXT ? (
         // 文本消息输入框
         <TextField
@@ -127,29 +130,26 @@ export default function MessageSender({
       ) : (
         // 文件上传显示区域
         <div
-          style={{ 
-            border: '1px dashed #aaa', 
-            padding: '16px', 
-            marginTop: '16px',
-            marginBottom: '8px',
-            borderRadius: '4px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between'
-          }}
-        >
-          <div style={{ display: 'flex', alignItems: 'center' }}>
-            <AttachFileIcon color="primary" style={{ marginRight: '8px' }}/>
+          style={{
+            border: "1px dashed #aaa",
+            padding: "16px",
+            marginTop: "16px",
+            marginBottom: "8px",
+            borderRadius: "4px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between"
+          }}>
+          <div style={{ display: "flex", alignItems: "center" }}>
+            <AttachFileIcon color="primary" style={{ marginRight: "8px" }} />
             <Typography>
-              {selectedFile ? selectedFile.name : getMessage("no_file_selected")}
+              {selectedFile
+                ? selectedFile.name
+                : getMessage("no_file_selected")}
               {selectedFile && ` (${(selectedFile.size / 1024).toFixed(2)} KB)`}
             </Typography>
           </div>
-          <Button 
-            size="small" 
-            color="secondary" 
-            onClick={clearSelectedFile}
-          >
+          <Button size="small" color="secondary" onClick={clearSelectedFile}>
             {getMessage("cancel")}
           </Button>
         </div>
@@ -171,10 +171,9 @@ export default function MessageSender({
         <Button
           startIcon={<AttachFileIcon />}
           onClick={triggerFileSelect}
-          style={{ margin: '16px 0 8px 0' }}
+          style={{ margin: "16px 0 8px 0" }}
           variant="outlined"
-          fullWidth
-        >
+          fullWidth>
           {getMessage("attachment")}
         </Button>
 
@@ -192,13 +191,12 @@ export default function MessageSender({
             onClick={handleSendMessage}
             style={{ marginTop: 8 }}
             disabled={
-              (messageType === MessageType.TEXT && !message) || 
+              (messageType === MessageType.TEXT && !message) ||
               (messageType === MessageType.FILE && !selectedFile)
-            }
-          >
+            }>
             {getMessage("send_message")}
           </LoadingButton>
-          
+
           <IconButton
             color="primary"
             onClick={() => setShowConfig(true)}
