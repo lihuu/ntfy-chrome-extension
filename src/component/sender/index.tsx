@@ -2,19 +2,11 @@ import { Settings } from "@mui/icons-material"
 import AttachFileIcon from "@mui/icons-material/AttachFile"
 import CheckIcon from "@mui/icons-material/Check"
 import { LoadingButton } from "@mui/lab"
-import {
-  Alert,
-  Button,
-  FormControlLabel,
-  FormGroup,
-  IconButton,
-  Switch,
-  Typography
-} from "@mui/material"
+import { Alert, Button, FormControl, IconButton, InputLabel, MenuItem, Select, Typography } from "@mui/material"
 import TextField from "@mui/material/TextField"
-import { useRef, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 
-import { MessageType, SendingState, type MessageSenderProps } from "~/types"
+import { type MessageSenderProps, MessageType, SendingState, type Topic } from "~/types"
 import getMessage from "~/utils/LocaleUtils"
 import { sendMessageToNtfy } from "~/utils/MessageUtils"
 
@@ -29,9 +21,34 @@ export default function MessageSender({
   const [title, setTitle] = useState("")
   const [selectedFile, setSelectedFile] = useState<File | null>(null)
   const [messageType, setMessageType] = useState<MessageType>(MessageType.TEXT)
+  const [selectedTopic, setSelectedTopic] = useState("")
+  const [availableTopics, setAvailableTopics] = useState<Topic[]>([])
 
   // 用于文件选择的引用
   const fileInputRef = useRef<HTMLInputElement>(null)
+
+  // 初始化可用的topics和默认选中的topic
+  useEffect(() => {
+    let topics: Topic[] = []
+
+    if (config.topics && config.topics.length > 0) {
+      // 使用新的topics配置
+      topics = config.topics
+    } else if (config.topic) {
+      // 向前兼容：将旧的单个topic转换为topics数组
+      topics = [{ name: config.topic, isDefault: true }]
+    }
+
+    setAvailableTopics(topics)
+
+    // 设置默认选中的topic
+    const defaultTopic = topics.find((t) => t.isDefault)
+    if (defaultTopic) {
+      setSelectedTopic(defaultTopic.name)
+    } else if (topics.length > 0) {
+      setSelectedTopic(topics[0].name)
+    }
+  }, [config])
 
   // 处理文件选择
   const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -61,11 +78,25 @@ export default function MessageSender({
       return
     }
     setSendingState(SendingState.SENDING)
-    if (config.serviceAddress === "" || config.topic === "") {
+
+    // 检查必要的配置
+    if (config.serviceAddress === "" || availableTopics.length === 0) {
       setSendingState(SendingState.IDLE)
       // 如果没有配置，显示配置界面
       setShowConfig(true)
       return
+    }
+
+    // 使用选中的topic或默认topic
+    const topicToUse =
+      selectedTopic ||
+      availableTopics.find((t) => t.isDefault)?.name ||
+      availableTopics[0]?.name
+
+    // 创建临时配置，使用选中的topic
+    const configWithSelectedTopic = {
+      ...config,
+      topic: topicToUse
     }
 
     sendMessageToNtfy(
@@ -77,7 +108,7 @@ export default function MessageSender({
             ? selectedFile || undefined
             : undefined
       },
-      config,
+      configWithSelectedTopic,
       () => {
         setSendingState(SendingState.SUCCESS)
         // 发送成功后清除文件选择
@@ -103,6 +134,24 @@ export default function MessageSender({
           setSendingState(SendingState.IDLE)
         }}
       />
+
+      {/* Topic选择器 */}
+      {availableTopics.length > 1 && (
+        <FormControl fullWidth margin="normal">
+          <InputLabel>{getMessage("select_topic")}</InputLabel>
+          <Select
+            value={selectedTopic}
+            label={getMessage("select_topic")}
+            onChange={(e) => setSelectedTopic(e.target.value)}>
+            {availableTopics.map((topic) => (
+              <MenuItem key={topic.name} value={topic.name}>
+                {topic.name}{" "}
+                {topic.isDefault ? `(${getMessage("default")})` : ""}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+      )}
 
       {/* 隐藏的文件输入 */}
       <input

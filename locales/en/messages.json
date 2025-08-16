@@ -50,6 +50,18 @@
   "cancel": {
     "message": "Cancel"
   },
+  "topics": {
+    "message": "Topics"
+  },
+  "new_topic": {
+    "message": "New Topic"
+  },
+  "select_topic": {
+    "message": "Select Topic"
+  },
+  "default": {
+    "message": "Default"
+  },
   "send_failed": {
     "message": "Send failed"
   },
@@ -57,6 +69,30 @@
     "message": "Title"
   },
   "attachment": {
-    "message": "Attachment"
+    "message": "Attach File"
+  },
+  "add_topic": {
+    "message": "Add Topic"
+  },
+  "topic_name": {
+    "message": "Topic Name"
+  },
+  "confirm": {
+    "message": "Confirm"
+  },
+  "set_as_default": {
+    "message": "Set as Default"
+  },
+  "delete": {
+    "message": "Delete"
+  },
+  "confirm_delete": {
+    "message": "Confirm Delete"
+  },
+  "delete_topic_warning": {
+    "message": "Are you sure you want to delete the topic \"$topicName\"? This action cannot be undone."
+  },
+  "no_topics_configured": {
+    "message": "No topics configured. Click \"Add Topic\" to get started."
   }
 }

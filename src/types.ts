@@ -1,6 +1,12 @@
+export interface Topic {
+  name: string
+  isDefault: boolean
+}
+
 export interface NotifyConfig {
   serviceAddress: string
-  topic: string
+  topic: string // 为了向前兼容保留
+  topics?: Topic[] // 新的多topic支持
   username: string
   password: string
   token: string

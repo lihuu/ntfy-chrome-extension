@@ -13,6 +13,7 @@ function IndexPopup() {
   const [config, setConfig] = useState<NotifyConfig>({
     serviceAddress: "",
     topic: "",
+    topics: [], // 初始化为空数组
     username: "",
     password: "",
     token: ""
@@ -22,9 +23,21 @@ function IndexPopup() {
 
   useEffect(() => {
     chrome.storage.sync.get("notifyConfig", (result) => {
-      const config = result.notifyConfig
-      if (config) {
-        setConfig(config)
+      const savedConfig = result.notifyConfig
+      if (savedConfig) {
+        // 向前兼容性处理
+        if (!savedConfig.topics && savedConfig.topic) {
+          // 如果是旧格式，转换为新格式
+          const migratedConfig = {
+            ...savedConfig,
+            topics: [{ name: savedConfig.topic, isDefault: true }]
+          }
+          setConfig(migratedConfig)
+          // 保存迁移后的配置
+          chrome.storage.sync.set({ notifyConfig: migratedConfig })
+        } else {
+          setConfig(savedConfig)
+        }
       }
     })
   }, [configUpdateTimes])
