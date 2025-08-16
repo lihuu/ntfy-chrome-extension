@@ -117,7 +117,7 @@
     "message": "Save Changes"
   },
   "delete_config_warning": {
-    "message": "Are you sure you want to delete the configuration \"$configName\"? This action cannot be undone."
+    "message": "Are you sure you want to delete the configuration \"{1}\"? This action cannot be undone."
   },
   "no_configs_configured": {
     "message": "No configurations set up. Click \"Add Configuration\" to get started."

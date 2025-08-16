@@ -117,7 +117,7 @@
     "message": "保存更改"
   },
   "delete_config_warning": {
-    "message": "确定要删除配置\"$configName\"吗？此操作无法撤销。"
+    "message": "确定要删除配置\"{1}\"吗？此操作无法撤销。"
   },
   "no_configs_configured": {
     "message": "尚未设置任何配置。点击\"添加配置\"开始设置。"

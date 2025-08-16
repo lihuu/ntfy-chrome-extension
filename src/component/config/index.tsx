@@ -26,10 +26,6 @@ import { useEffect, useState } from "react"
 import type { ConfigProps, ServiceConfig } from "~types"
 import getMessage from "~utils/LocaleUtils"
 
-
-
-
-
 export default function Config({ config, setShowConfig }: ConfigProps) {
   const [serviceConfigs, setServiceConfigs] = useState<ServiceConfig[]>([])
   const [showAddConfig, setShowAddConfig] = useState(false)
@@ -543,10 +539,7 @@ export default function Config({ config, setShowConfig }: ConfigProps) {
         </DialogTitle>
         <DialogContent>
           <DialogContentText id="delete-dialog-description">
-            {getMessage("delete_config_warning").replace(
-              "$configName$",
-              configToDelete
-            )}
+            {getMessage("delete_config_warning").replace("{1}", configToDelete)}
           </DialogContentText>
         </DialogContent>
         <DialogActions>
