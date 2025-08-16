@@ -3,6 +3,7 @@ export interface NotifyConfig {
   topic: string
   username: string
   password: string
+  token: string
 }
 
 export interface ConfigProps {
@@ -22,9 +23,9 @@ export enum SendingState {
   FAILED
 }
 
-export interface NtfyContent{
-  message:string
-  title?:string
+export interface NtfyContent {
+  message: string
+  title?: string
   file?: File
 }
 

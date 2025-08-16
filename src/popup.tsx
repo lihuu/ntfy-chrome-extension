@@ -4,13 +4,18 @@ import Config from "~/component/config"
 import MessageSender from "~/component/sender"
 import type { NotifyConfig } from "~/types"
 
+
+
+
+
 function IndexPopup() {
   const [showConfig, setShowConfig] = useState(false)
   const [config, setConfig] = useState<NotifyConfig>({
     serviceAddress: "",
     topic: "",
     username: "",
-    password: ""
+    password: "",
+    token: ""
   })
 
   const [configUpdateTimes, setConfigUpdateTimes] = useState(0)

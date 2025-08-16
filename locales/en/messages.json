@@ -20,6 +20,12 @@
   "password": {
     "message": "Password"
   },
+  "token": {
+    "message": "Token"
+  },
+  "token_helper": {
+    "message": "Token takes priority, falls back to username/password if empty"
+  },
   "save": {
     "message": "Save"
   },

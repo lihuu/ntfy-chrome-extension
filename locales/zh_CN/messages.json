@@ -20,6 +20,12 @@
   "password": {
     "message": "密码"
   },
+  "token": {
+    "message": "访问令牌"
+  },
+  "token_helper": {
+    "message": "优先使用Token，如果为空则使用用户名密码"
+  },
   "save": {
     "message": "保存"
   },

@@ -1,28 +1,26 @@
+import ArrowBackIcon from "@mui/icons-material/ArrowBack"
+import Box from "@mui/material/Box"
 import Button from "@mui/material/Button"
 import TextField from "@mui/material/TextField"
 import { useState } from "react"
-import Box from "@mui/material/Box"
-import ArrowBackIcon from "@mui/icons-material/ArrowBack"
 
 import type { ConfigProps } from "~types"
 import getMessage from "~utils/LocaleUtils"
-
-
-
-
 
 export default function Config({ config, setShowConfig }: ConfigProps) {
   const [serviceAddress, setServiceAddress] = useState(config.serviceAddress)
   const [topic, setTopic] = useState(config.topic)
   const [username, setUsername] = useState(config.username)
   const [password, setPassword] = useState(config.password)
+  const [token, setToken] = useState(config.token)
 
   const handleSave = () => {
     const newConfig = {
       serviceAddress,
       topic,
       username,
-      password
+      password,
+      token
     }
     chrome.storage.sync.set({ notifyConfig: newConfig }, () => {
       console.log("Configuration saved to chrome.storage")
@@ -35,11 +33,18 @@ export default function Config({ config, setShowConfig }: ConfigProps) {
         <Button
           startIcon={<ArrowBackIcon />}
           onClick={() => setShowConfig(false)}
-          style={{ marginLeft: -8,paddingLeft: 0,paddingRight: 0,justifyContent:"left",minWidth:"32px" }}
-        >
+          style={{
+            marginLeft: -8,
+            paddingLeft: 0,
+            paddingRight: 0,
+            justifyContent: "left",
+            minWidth: "32px"
+          }}>
           {/* {getMessage("back")} */}
         </Button>
-        <h2 style={{ margin: 0,paddingTop:"6px" }}>{getMessage("push_config")}</h2>
+        <h2 style={{ margin: 0, paddingTop: "6px" }}>
+          {getMessage("push_config")}
+        </h2>
       </Box>
       <TextField
         label={getMessage("service_address")}
@@ -76,6 +81,17 @@ export default function Config({ config, setShowConfig }: ConfigProps) {
         margin="normal"
         onChange={(e) => setPassword(e.target.value)}
         value={password}
+      />
+
+      <TextField
+        label={getMessage("token")}
+        type="password"
+        variant="standard"
+        fullWidth
+        margin="normal"
+        onChange={(e) => setToken(e.target.value)}
+        value={token}
+        helperText={getMessage("token_helper")}
       />
 
       <Button
