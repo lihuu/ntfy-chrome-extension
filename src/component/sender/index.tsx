@@ -2,11 +2,25 @@ import { Settings } from "@mui/icons-material"
 import AttachFileIcon from "@mui/icons-material/AttachFile"
 import CheckIcon from "@mui/icons-material/Check"
 import { LoadingButton } from "@mui/lab"
-import { Alert, Button, FormControl, IconButton, InputLabel, MenuItem, Select, Typography } from "@mui/material"
+import {
+  Alert,
+  Button,
+  FormControl,
+  IconButton,
+  InputLabel,
+  MenuItem,
+  Select,
+  Typography
+} from "@mui/material"
 import TextField from "@mui/material/TextField"
 import { useEffect, useRef, useState } from "react"
 
-import { type MessageSenderProps, MessageType, SendingState, type Topic } from "~/types"
+import {
+  MessageType,
+  SendingState,
+  type MessageSenderProps,
+  type Topic
+} from "~/types"
 import getMessage from "~/utils/LocaleUtils"
 import { sendMessageToNtfy } from "~/utils/MessageUtils"
 
