@@ -94,5 +94,35 @@
   },
   "no_topics_configured": {
     "message": "No topics configured. Click \"Add Topic\" to get started."
+  },
+  "service_configs": {
+    "message": "Service Configurations"
+  },
+  "add_config": {
+    "message": "Add Configuration"
+  },
+  "edit_config": {
+    "message": "Edit Configuration"
+  },
+  "config_name": {
+    "message": "Configuration Name"
+  },
+  "edit": {
+    "message": "Edit"
+  },
+  "copy": {
+    "message": "Copy"
+  },
+  "save_changes": {
+    "message": "Save Changes"
+  },
+  "delete_config_warning": {
+    "message": "Are you sure you want to delete the configuration \"$configName\"? This action cannot be undone."
+  },
+  "no_configs_configured": {
+    "message": "No configurations set up. Click \"Add Configuration\" to get started."
+  },
+  "select_config": {
+    "message": "Select Configuration"
   }
 }

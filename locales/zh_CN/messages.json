@@ -93,6 +93,36 @@
     "message": "确定要删除主题$topicName吗？此操作无法撤销。"
   },
   "no_topics_configured": {
-    "message": "尚未配置任何主题。点击添加主题开始设置。"
+    "message": "尚未配置任何主题。点击\"添加主题\"开始设置。"
+  },
+  "service_configs": {
+    "message": "服务配置"
+  },
+  "add_config": {
+    "message": "添加配置"
+  },
+  "edit_config": {
+    "message": "编辑配置"
+  },
+  "config_name": {
+    "message": "配置名称"
+  },
+  "edit": {
+    "message": "编辑"
+  },
+  "copy": {
+    "message": "复制"
+  },
+  "save_changes": {
+    "message": "保存更改"
+  },
+  "delete_config_warning": {
+    "message": "确定要删除配置\"$configName\"吗？此操作无法撤销。"
+  },
+  "no_configs_configured": {
+    "message": "尚未设置任何配置。点击\"添加配置\"开始设置。"
+  },
+  "select_config": {
+    "message": "选择配置"
   }
 }

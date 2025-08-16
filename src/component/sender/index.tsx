@@ -2,25 +2,11 @@ import { Settings } from "@mui/icons-material"
 import AttachFileIcon from "@mui/icons-material/AttachFile"
 import CheckIcon from "@mui/icons-material/Check"
 import { LoadingButton } from "@mui/lab"
-import {
-  Alert,
-  Button,
-  FormControl,
-  IconButton,
-  InputLabel,
-  MenuItem,
-  Select,
-  Typography
-} from "@mui/material"
+import { Alert, Button, FormControl, IconButton, InputLabel, MenuItem, Select, Typography } from "@mui/material"
 import TextField from "@mui/material/TextField"
 import { useEffect, useRef, useState } from "react"
 
-import {
-  MessageType,
-  SendingState,
-  type MessageSenderProps,
-  type Topic
-} from "~/types"
+import { type MessageSenderProps, MessageType, SendingState, type ServiceConfig } from "~/types"
 import getMessage from "~/utils/LocaleUtils"
 import { sendMessageToNtfy } from "~/utils/MessageUtils"
 
@@ -35,32 +21,59 @@ export default function MessageSender({
   const [title, setTitle] = useState("")
   const [selectedFile, setSelectedFile] = useState<File | null>(null)
   const [messageType, setMessageType] = useState<MessageType>(MessageType.TEXT)
-  const [selectedTopic, setSelectedTopic] = useState("")
-  const [availableTopics, setAvailableTopics] = useState<Topic[]>([])
+  const [selectedConfigId, setSelectedConfigId] = useState("")
+  const [availableConfigs, setAvailableConfigs] = useState<ServiceConfig[]>([])
 
   // 用于文件选择的引用
   const fileInputRef = useRef<HTMLInputElement>(null)
 
-  // 初始化可用的topics和默认选中的topic
-  useEffect(() => {
-    let topics: Topic[] = []
+  // 生成唯一ID
+  const generateId = () =>
+    Date.now().toString() + Math.random().toString(36).substr(2, 9)
 
-    if (config.topics && config.topics.length > 0) {
-      // 使用新的topics配置
-      topics = config.topics
+  // 初始化可用的配置和默认选中的配置
+  useEffect(() => {
+    let configs: ServiceConfig[] = []
+
+    if (config.configs && config.configs.length > 0) {
+      // 使用新的多配置结构
+      configs = config.configs
+    } else if (config.topics && config.topics.length > 0) {
+      // 从旧的多topic结构迁移
+      configs = config.topics.map((topic) => ({
+        id: generateId(),
+        name: `${config.serviceAddress || "ntfy"} - ${topic.name}`,
+        serviceAddress: config.serviceAddress || "",
+        topic: topic.name,
+        username: config.username || "",
+        password: config.password || "",
+        token: config.token || "",
+        isDefault: topic.isDefault
+      }))
     } else if (config.topic) {
-      // 向前兼容：将旧的单个topic转换为topics数组
-      topics = [{ name: config.topic, isDefault: true }]
+      // 从最旧的单topic结构迁移
+      configs = [
+        {
+          id: generateId(),
+          name: `${config.serviceAddress || "ntfy"} - ${config.topic}`,
+          serviceAddress: config.serviceAddress || "",
+          topic: config.topic,
+          username: config.username || "",
+          password: config.password || "",
+          token: config.token || "",
+          isDefault: true
+        }
+      ]
     }
 
-    setAvailableTopics(topics)
+    setAvailableConfigs(configs)
 
-    // 设置默认选中的topic
-    const defaultTopic = topics.find((t) => t.isDefault)
-    if (defaultTopic) {
-      setSelectedTopic(defaultTopic.name)
-    } else if (topics.length > 0) {
-      setSelectedTopic(topics[0].name)
+    // 设置默认选中的配置
+    const defaultConfig = configs.find((c) => c.isDefault)
+    if (defaultConfig) {
+      setSelectedConfigId(defaultConfig.id)
+    } else if (configs.length > 0) {
+      setSelectedConfigId(configs[0].id)
     }
   }, [config])
 
@@ -94,23 +107,36 @@ export default function MessageSender({
     setSendingState(SendingState.SENDING)
 
     // 检查必要的配置
-    if (config.serviceAddress === "" || availableTopics.length === 0) {
+    if (availableConfigs.length === 0) {
       setSendingState(SendingState.IDLE)
       // 如果没有配置，显示配置界面
       setShowConfig(true)
       return
     }
 
-    // 使用选中的topic或默认topic
-    const topicToUse =
-      selectedTopic ||
-      availableTopics.find((t) => t.isDefault)?.name ||
-      availableTopics[0]?.name
+    // 获取选中的配置
+    const selectedConfig =
+      availableConfigs.find((c) => c.id === selectedConfigId) ||
+      availableConfigs.find((c) => c.isDefault) ||
+      availableConfigs[0]
 
-    // 创建临时配置，使用选中的topic
-    const configWithSelectedTopic = {
-      ...config,
-      topic: topicToUse
+    if (
+      !selectedConfig ||
+      !selectedConfig.serviceAddress ||
+      !selectedConfig.topic
+    ) {
+      setSendingState(SendingState.IDLE)
+      setShowConfig(true)
+      return
+    }
+
+    // 创建临时配置对象，用于兼容现有的sendMessageToNtfy函数
+    const configForSending = {
+      serviceAddress: selectedConfig.serviceAddress,
+      topic: selectedConfig.topic,
+      username: selectedConfig.username,
+      password: selectedConfig.password,
+      token: selectedConfig.token
     }
 
     sendMessageToNtfy(
@@ -122,7 +148,7 @@ export default function MessageSender({
             ? selectedFile || undefined
             : undefined
       },
-      configWithSelectedTopic,
+      configForSending,
       () => {
         setSendingState(SendingState.SUCCESS)
         // 发送成功后清除文件选择
@@ -149,18 +175,18 @@ export default function MessageSender({
         }}
       />
 
-      {/* Topic选择器 */}
-      {availableTopics.length > 1 && (
+      {/* 配置选择器 */}
+      {availableConfigs.length > 1 && (
         <FormControl fullWidth margin="normal">
-          <InputLabel>{getMessage("select_topic")}</InputLabel>
+          <InputLabel>{getMessage("select_config")}</InputLabel>
           <Select
-            value={selectedTopic}
-            label={getMessage("select_topic")}
-            onChange={(e) => setSelectedTopic(e.target.value)}>
-            {availableTopics.map((topic) => (
-              <MenuItem key={topic.name} value={topic.name}>
-                {topic.name}{" "}
-                {topic.isDefault ? `(${getMessage("default")})` : ""}
+            value={selectedConfigId}
+            label={getMessage("select_config")}
+            onChange={(e) => setSelectedConfigId(e.target.value)}>
+            {availableConfigs.map((configItem) => (
+              <MenuItem key={configItem.id} value={configItem.id}>
+                {configItem.name}{" "}
+                {configItem.isDefault ? `(${getMessage("default")})` : ""}
               </MenuItem>
             ))}
           </Select>
