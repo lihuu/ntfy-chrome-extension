@@ -33,7 +33,7 @@ export default function Config({ config, setShowConfig }: ConfigProps) {
   const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null)
   const [selectedConfigId, setSelectedConfigId] = useState<string | null>(null)
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
-  const [configToDelete, setConfigToDelete] = useState<string>("")
+  const [configToDelete, setConfigToDelete] = useState<ServiceConfig>(null)
 
   // 编辑表单状态
   const [formData, setFormData] = useState({
@@ -203,7 +203,7 @@ export default function Config({ config, setShowConfig }: ConfigProps) {
         (c) => c.id === selectedConfigId
       )
       if (configToDelete) {
-        setConfigToDelete(configToDelete.name)
+        setConfigToDelete(configToDelete)
         setDeleteDialogOpen(true)
       }
     }
@@ -211,9 +211,9 @@ export default function Config({ config, setShowConfig }: ConfigProps) {
   }
 
   const handleDeleteConfirm = () => {
-    if (selectedConfigId) {
+    if (configToDelete) {
       const updatedConfigs = serviceConfigs.filter(
-        (c) => c.id !== selectedConfigId
+        (c) => c.id !== configToDelete.id
       )
       // 如果删除的是默认配置且还有其他配置，将第一个设为默认
       if (updatedConfigs.length > 0) {
@@ -225,13 +225,13 @@ export default function Config({ config, setShowConfig }: ConfigProps) {
       setServiceConfigs(updatedConfigs)
     }
     setDeleteDialogOpen(false)
-    setConfigToDelete("")
+    setConfigToDelete(null)
     setSelectedConfigId(null)
   }
 
   const handleDeleteCancel = () => {
     setDeleteDialogOpen(false)
-    setConfigToDelete("")
+    setConfigToDelete(null)
     setSelectedConfigId(null)
   }
 
@@ -539,7 +539,10 @@ export default function Config({ config, setShowConfig }: ConfigProps) {
         </DialogTitle>
         <DialogContent>
           <DialogContentText id="delete-dialog-description">
-            {getMessage("delete_config_warning").replace("{1}", configToDelete)}
+            {getMessage("delete_config_warning").replace(
+              "{1}",
+              configToDelete?.name
+            )}
           </DialogContentText>
         </DialogContent>
         <DialogActions>
