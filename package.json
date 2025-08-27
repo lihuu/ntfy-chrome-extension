@@ -1,7 +1,7 @@
 {
   "name": "ntfy-chrome-extension",
   "displayName": "Ntfy chrome extension",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "chrome extension for of ntfy, support sending messages and notifications",
   "author": "lihuu",
   "scripts": {
